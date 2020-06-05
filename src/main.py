@@ -9,17 +9,39 @@ def getData():
     conn = psycopg2.connect(host="localhost", port = 5432, database = , user="postgres", password=)
     with conn:
         cur = conn.cursor()
-        cur.execute("select (open-low)/open as percent_difference from historical_data order by percent_difference DESC limit 10;")
-        queryResult = cur.fetchall()
-        cur.execute("select count(*) from historical_data")
-        rowLength = cur.fetchall()
+        cur.execute("select * from stock_live_data;")
+        row = cur.fetchone()
+        stockBid = row[1]
+        stockAsk = row[2]
+        stockLast = row[3]
+        stockVolume = row[4]
+        stock_fifty_two_week_high = row[5]
+        stock_fifty_two_week_low = row[6]
+
+        cur.execute("select * from options_live_data;")
+        optionList = []
+        row = cur.fetchone()
+        optionList.append(row)
+        while row:
+            row = cur.fetchone()
+            optionList.append(row)
     cur.close()    
     conn.close()
-    return queryResult, rowLength
+    return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList
         
 @app.route("/")
 def index():
-    return render_template('index.html')
+    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData()
+    templateData = {
+        'stockBid':stockBid,
+        'stockAsk':stockAsk,
+        'stockLast':stockLast,
+        'stockVolume':stockVolume,
+        'stock_fifty_two_week_high':stock_fifty_two_week_high,
+        'stock_fifty_two_week_low':stock_fifty_two_week_low,
+        'optionList':optionList
+        }
+    return render_template('index.html',**templateData)
 
 @app.route("/", methods=['POST'])
 def get_stock_ticker():
