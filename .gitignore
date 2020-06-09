@@ -133,3 +133,5 @@ dmypy.json
 *.class
 *.pem
 *.py~
+*.ini
+config.py
