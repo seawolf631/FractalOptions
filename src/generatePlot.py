@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import psycopg2
+from config import config
 
 def getData():
-    conn = psycopg2.connect(host="localhost", port = 5432, database =  , user="postgres", password=)
+    params = config()
+    conn = psycopg2.connect(**params)
     with conn:
         cur = conn.cursor()
         cur.execute("select (open-low)/open as percent_difference from historical_data order by percent_difference ASC;")

@@ -3,10 +3,11 @@ app = Flask(__name__)
 import psycopg2
 import matplotlib.pyplot as plt
 import io
-
+from config import config
 
 def getData():
-    conn = psycopg2.connect(host="localhost", port = 5432, database = , user="postgres", password=)
+    params = config()
+    conn = psycopg2.connect(**params)
     with conn:
         cur = conn.cursor()
         cur.execute("select * from stock_live_data;")
@@ -49,4 +50,4 @@ def get_stock_ticker():
     return stockTicker
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port = 80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=False)
