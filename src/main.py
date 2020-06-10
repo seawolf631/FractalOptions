@@ -30,8 +30,8 @@ def getData():
     conn.close()
     return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList
         
-@app.route("/")
-def index():
+@app.route("/stock")
+def stockPage():
     stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData()
     templateData = {
         'stockBid':stockBid,
@@ -42,12 +42,28 @@ def index():
         'stock_fifty_two_week_low':stock_fifty_two_week_low,
         'optionList':optionList
         }
-    return render_template('index.html',**templateData)
+    return render_template('stock.html',**templateData)
 
-@app.route("/", methods=['POST'])
+@app.route("/stock", methods=['POST'])
 def get_stock_ticker():
     stockTicker = request.form['stockTicker']
-    return stockTicker
+    stockFile = stockTicker + "_plot.png"
+    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData()
+    templateData = {
+        'stockBid':stockBid,
+        'stockAsk':stockAsk,
+        'stockLast':stockLast,
+        'stockVolume':stockVolume,
+        'stock_fifty_two_week_high':stock_fifty_two_week_high,
+        'stock_fifty_two_week_low':stock_fifty_two_week_low,
+        'optionList':optionList,
+        'stock_plot':stockFile
+        }
+    return render_template('stock.html',**templateData)
+
+@app.route("/")
+def index():
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=False)

@@ -3,6 +3,7 @@ import psycopg2
 import os
 import re
 from config import config
+import sys
 
 #Connect to Postgres
 params = config()
@@ -12,18 +13,27 @@ with conn:
     cur = conn.cursor()
     
 #Read Historical Data JSON File
-    cur.execute("DROP TABLE IF EXISTS historical_data;")
-    cur.execute("CREATE TABLE historical_data(historical_price_id serial PRIMARY KEY, open real NOT NULL,low real NOT NULL, high real NOT NULL,close real NOT NULL, stock varchar(8) NOT NULL);")
-    rootdir = '../docs/exampleJSONData'
-    for subdir, dirs, files in os.walk(rootdir):
-        for file in files:
-            if(file.split("_")[1] == "data.json"):
-                with open(os.path.join(subdir,file)) as f:
-                    data = json.load(f)
-                    stock="\'" + file.split("_")[0] + "\'"
-                    for x in data["candles"]:
+    #cur.execute("DROP TABLE IF EXISTS historical_data;")
+    cur.execute("CREATE TABLE IF NOT EXISTS historical_data(historical_price_id serial PRIMARY KEY, open real NOT NULL,low real NOT NULL, high real NOT NULL,close real NOT NULL, stock varchar(8) NOT NULL);")
+    filePath = sys.argv[1]
+    print(filePath)
+    with open(filePath) as f:
+        data = json.load(f)
+        file=os.path.basename(filePath)
+        stock = "\'" + file.split("_")[0] + "\'"
+        for x in data["candles"]:
                         cur.execute("Insert INTO historical_data (open,low,high,close,stock) VALUES (%s,%s,%s,%s,%s);" % (x['open'],x['low'],x['high'],x['close'],stock))
-                        print ("Insert INTO historical_data (open,low,high,close,stock) VALUES (%s,%s,%s,%s,%s);" % (x['open'],x['low'],x['high'],x['close'],stock))
+                        
+    #rootdir = '../docs/exampleJSONData'
+    #for subdir, dirs, files in os.walk(rootdir):
+     #   for file in files:
+      #      if(file.split("_")[1] == "data.json"):
+       #         with open(os.path.join(subdir,file)) as f:
+        #            data = json.load(f)
+         #           stock="\'" + file.split("_")[0] + "\'"
+          #          for x in data["candles"]:
+           #             cur.execute("Insert INTO historical_data (open,low,high,close,stock) VALUES (%s,%s,%s,%s,%s);" % (x['open'],x['low'],x['high'],x['close'],stock))
+            #            print ("Insert INTO historical_data (open,low,high,close,stock) VALUES (%s,%s,%s,%s,%s);" % (x['open'],x['low'],x['high'],x['close'],stock))
 
 #Read Options JSON File
 appleStock = "\'AAPL\'"
@@ -41,14 +51,6 @@ with open('../docs/exampleJSONData/AAPL_Option_Data.json') as f:
         for y in data["putExpDateMap"][x]:
             cur.execute("Insert INTO options_live_data (description,bid,ask,last,volume,implied_volatility) VALUES (\'%s\',%s,%s,%s,%s,%s);" % (data["putExpDateMap"][x][y][0]["description"].lower(),data["putExpDateMap"][x][y][0]["bid"],data["putExpDateMap"][x][y][0]["ask"],data["putExpDateMap"][x][y][0]["last"],data["putExpDateMap"][x][y][0]["totalVolume"],data["putExpDateMap"][x][y][0]["volatility"]))
     
-#Queries
-    cur.execute("select (open-low)/open as percent_difference from historical_data order by percent_difference DESC limit 10;")
-    query_results = cur.fetchall()
-    print(query_results)
-    cur.execute("select count(*) from historical_data;")
-    query_results = cur.fetchall()
-    print(query_results)
-
 #Close Postgres Connection
 cur.close()
 conn.close()
