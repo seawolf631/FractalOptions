@@ -4,8 +4,10 @@ import psycopg2
 import matplotlib.pyplot as plt
 import io
 from config import config
+import parseLiveDataJSON
 
-def getData():
+def getData(stockTicker):
+    parseLiveDataJSON.liveParseData(stockTicker)
     params = config()
     conn = psycopg2.connect(**params)
     with conn:
@@ -30,25 +32,11 @@ def getData():
     conn.close()
     return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList
         
-@app.route("/stock")
-def stockPage():
-    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData()
-    templateData = {
-        'stockBid':stockBid,
-        'stockAsk':stockAsk,
-        'stockLast':stockLast,
-        'stockVolume':stockVolume,
-        'stock_fifty_two_week_high':stock_fifty_two_week_high,
-        'stock_fifty_two_week_low':stock_fifty_two_week_low,
-        'optionList':optionList
-        }
-    return render_template('stock.html',**templateData)
-
-@app.route("/stock", methods=['POST'])
+@app.route("/stock", methods=['POST','GET'])
 def get_stock_ticker():
     stockTicker = request.form['stockTicker']
     stockFile = stockTicker + "_plot.png"
-    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData()
+    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData(stockTicker)
     templateData = {
         'stockBid':stockBid,
         'stockAsk':stockAsk,
