@@ -5,31 +5,42 @@
 <body>
   <p>Enter Stock Ticker:
     <form method="POST" action="/stock">
-      <input type="text" name="stockTicker">
+      <input type="text" name="stockTicker" placeholder="(ex: AAPL, AMGN, etc;)">
       <input type="submit">
     </form>
   </p>
-<h1>Log Survival Plot</h1>
-<img src="{{url_for('static', filename=stock_plot)}}"/>
-<h1>Stock Live Data</h1>
-<table>
-  <tr>
-    <td>bid</td>
-    <td>ask</td>
-    <td>last</td>
-    <td>volume</td>
-    <td>52 Week High</td>
-    <td>52 Week Low</td>
-  </tr>
-<tr>
-<td>{{stockBid}}</td>
-<td>{{stockAsk}}</td>
-<td>{{stockLast}}</td>
-<td>{{stockVolume}}</td>
-<td>{{stock_fifty_two_week_high}}</td>
-<td>{{stock_fifty_two_week_low}}</td>
-</tr>
-</table>
+  <h1>Log Survival Plot</h1>
+  <div style="margin:0 auto;">
+    <img src="{{url_for('static', filename=negative_Stock_Plot)}}"/>
+    <img src="{{url_for('static',filename=positive_Stock_Plot)}}"/>
+  </div>
+  <h1>Stock Live Data</h1>
+  <table>
+    <tr>
+      <td>bid</td>
+      <td>ask</td>
+      <td>last</td>
+      <td>volume</td>
+      <td>52 Week High</td>
+      <td>52 Week Low</td>
+    </tr>
+    <tr>
+      <td>{{stockBid}}</td>
+      <td>{{stockAsk}}</td>
+      <td>{{stockLast}}</td>
+      <td>{{stockVolume}}</td>
+      <td>{{stock_fifty_two_week_high}}</td>
+      <td>{{stock_fifty_two_week_low}}</td>
+    </tr>
+    <br>
+  </table>
+  <p>Pick an anchor Option Strike & Price:
+  <form method="POST" action="/strike">
+    <input type="text" name="optionStrike" placeholder="Enter the Strike Price:">
+    <input type="text" name="optionPrice" placeholder="Enter the Last Price:">
+    <input type="submit">
+  </form>
+  </p>
 <h1>Option Chain Data</h1>
 <table>
 <tr>
@@ -49,7 +60,7 @@
 <td>{{i[4]}}</td>
 <td>{{i[5]}}</td>
 <td>{{i[6]}}</td>
-<td>Implied Alpha</td>
+<td></td>
 </tr>
 {%endfor%}
 </table>

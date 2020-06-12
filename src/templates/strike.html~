@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<head>
+  <title>Fractal Options</title>
+</head>
+<body>
+  <p>{{optionStrike}}</p>
+  <p>{{optionPrice}}</p>
+</body>
+</html
+

@@ -27,10 +27,10 @@ def liveParseData(stockTicker):
 
 
             cur.execute("DROP TABLE IF EXISTS options_live_data;")
-            cur.execute("CREATE TABLE options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL);")
-            for x in data["putExpDateMap"]:
-                for y in data["putExpDateMap"][x]:
-                    cur.execute("Insert INTO options_live_data (description,bid,ask,last,volume,implied_volatility) VALUES (\'%s\',%s,%s,%s,%s,%s);" % (data["putExpDateMap"][x][y][0]["description"].lower(),data["putExpDateMap"][x][y][0]["bid"],data["putExpDateMap"][x][y][0]["ask"],data["putExpDateMap"][x][y][0]["last"],data["putExpDateMap"][x][y][0]["totalVolume"],data["putExpDateMap"][x][y][0]["volatility"]))
+            cur.execute("CREATE TABLE options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL,bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL);")
+            for x in data["callExpDateMap"]:
+                for y in data["callExpDateMap"][x]:
+                    cur.execute("Insert INTO options_live_data (description,bid,ask,last,volume,implied_volatility) VALUES (\'%s\',%s,%s,%s,%s,%s);" % (data["callExpDateMap"][x][y][0]["description"].lower(),data["callExpDateMap"][x][y][0]["bid"],data["callExpDateMap"][x][y][0]["ask"],data["callExpDateMap"][x][y][0]["last"],data["callExpDateMap"][x][y][0]["totalVolume"],data["callExpDateMap"][x][y][0]["volatility"]))
 
 #Close Postgres Connection
     cur.close()
