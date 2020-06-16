@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import io
 from config import config
 import parseLiveDataJSON
+from math import log10;
 
-def getData(stockTicker):
+def getData(stockTicker,optionStrike=0,optionPrice=0):
     parseLiveDataJSON.liveParseData(stockTicker)
     params = config()
     conn = psycopg2.connect(**params)
@@ -21,23 +22,29 @@ def getData(stockTicker):
         stock_fifty_two_week_high = row[5]
         stock_fifty_two_week_low = row[6]
 
-        cur.execute("select * from options_live_data;")
+        cur.execute("select * from options_live_data where delta <= 0.2;")
         optionList = []
         row = cur.fetchone()
+        anchorStrike = row[2]
+        anchorPrice = row[5]
         optionList.append(row)
         while row:
+            daysToExp = row[9]
             row = cur.fetchone()
-            optionList.append(row)
+            if(row is not None):
+                if(daysToExp != row[9]):
+                    anchorStrike = row[2]
+                    anchorPrice = row[5]
+                else:
+                    if(row[5] > 0.0):
+                        alpha = 1 - (log10(row[5]/anchorPrice)/log10((row[2]-stockLast)/(anchorStrike-stockLast)))
+                    else:
+                        alpha = "N/a"
+                    row += (alpha,)
+                optionList.append(row)
     cur.close()    
     conn.close()
     return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList
-
-def appendImpiedAlpha(strike,optionPrice,optionList,stockLast):
-    for i in optionList:
-        currentStrike = float(i[1].split(" ")[4])
-        alpha = 1 - (math.log10(i[4]/optionPrice)/math.log10((currentStrike-stockLast)/(strike-stockLast)))
-        i.append(4)
-    return optionList
 
 @app.route("/stock", methods=['POST','GET'])
 def get_stock_ticker():
@@ -57,16 +64,6 @@ def get_stock_ticker():
         'positive_Stock_Plot':positiveStockFile
         }
     return render_template('stock.html',**templateData)
-
-@app.route("/strike", methods=['POST','GET'])
-def get_implied_alpha():
-    optionStrike = request.form['optionStrike']
-    optionPrice = request.form['optionPrice']
-    templateData = {
-        'optionStrike':optionStrike,
-        'optionPrice':optionPrice
-    }
-    return render_template('strike.html',**templateData)
 
 @app.route("/")
 def index():

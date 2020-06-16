@@ -44,23 +44,25 @@
 <h1>Option Chain Data</h1>
 <table>
 <tr>
-<td>Description</td>
-<td>bid</td>
-<td>ask</td>
-<td>last</td>
-<td>volume</td>
-<td>Implied Volatility</td>
-<td>Implied Alpha</td>
+  <td>Description</td>
+  <td>Strike</td>
+  <td>bid</td>
+  <td>ask</td>
+  <td>last</td>
+  <td>volume</td>
+  <td>Implied Volatility</td>
+  <td>Implied Alpha</td>
 </tr>
 {%for i in optionList%}
 <tr>
-<td>{{i[1]}}</td>
-<td>{{i[2]}}</td>
-<td>{{i[3]}}</td>
-<td>{{i[4]}}</td>
-<td>{{i[5]}}</td>
-<td>{{i[6]}}</td>
-<td>{{optionStrike}}{{optionPrice}}</td>
+  <td>{{i[1]}}</td>
+  <td>{{i[2]}}</td>
+  <td>{{i[3]}}</td>
+  <td>{{i[4]}}</td>
+  <td>{{i[5]}}</td>
+  <td>{{i[6]}}</td>
+  <td>{{i[7]}}</td>
+  <td>{{i[8]}}</td>
 </tr>
 {%endfor%}
 </table>

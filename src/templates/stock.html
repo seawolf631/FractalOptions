@@ -34,33 +34,32 @@
     </tr>
     <br>
   </table>
-  <p>Pick an anchor Option Strike & Price:
-  <form method="POST" action="/strike">
-    <input type="text" name="optionStrike" placeholder="Enter the Strike Price:">
-    <input type="text" name="optionPrice" placeholder="Enter the Last Price:">
-    <input type="submit">
-  </form>
-  </p>
-<h1>Option Chain Data</h1>
+<h1>Option Chain Data (Out of the Money)</h1>
 <table>
 <tr>
-<td>Description</td>
-<td>bid</td>
-<td>ask</td>
-<td>last</td>
-<td>volume</td>
-<td>Implied Volatility</td>
-<td>Implied Alpha</td>
+  <td>Description</td>
+  <td>Strike</td>
+  <td>bid</td>
+  <td>ask</td>
+  <td>last</td>
+  <td>volume</td>
+  <td>Implied Volatility</td>
+  <td>Delta</td>
+  <td>Days To Expiration</td>
+  <td>Implied Alpha</td>
 </tr>
 {%for i in optionList%}
 <tr>
-<td>{{i[1]}}</td>
-<td>{{i[2]}}</td>
-<td>{{i[3]}}</td>
-<td>{{i[4]}}</td>
-<td>{{i[5]}}</td>
-<td>{{i[6]}}</td>
-<td></td>
+  <td>{{i[1]}}</td>
+  <td>{{i[2]}}</td>
+  <td>{{i[3]}}</td>
+  <td>{{i[4]}}</td>
+  <td>{{i[5]}}</td>
+  <td>{{i[6]}}</td>
+  <td>{{i[7]}}</td>
+  <td>{{i[8]}}</td>
+  <td>{{i[9]}}</td>
+  <td>{{i[10]}}</td>
 </tr>
 {%endfor%}
 </table>
