@@ -7,12 +7,19 @@ curl --location --request POST 'https://api.tdameritrade.com/v1/oauth2/token' \
 --data-urlencode 'client_id=H2PZBDOKOS3FLTGOPRBD0A9GX6UILCJL@AMER.OAUTHAP' \
 --data-urlencode 'redirect_uri=https://127.0.0.1' >> ../docs/keys.json
 
-
-REFRESH=$(grep -oP '"access_token" :\K[^,]*' docs/keys.json)
+REFRESH=$(grep -oP '"access_token" :\K[^,]*' ../docs/keys.json)
 REFRESH=${REFRESH:2:-1}
 
-input="stockList.txt"
+input="../stockList.txt"
 while IFS= read -r line
 do
-      curl -X GET --header "Authorization:Bearer "${REFRESH} "https://api.tdameritrade.com/v1/marketdata/${line}/pricehistory?apikey=H2PZBDOKOS3FLTGOPRBD0A9GX6UILCJL&periodType=year&period=20&frequencyType=daily&frequency=1&needExtendedHoursData=false" >> docs/exampleJSONData/${line}_data.json
+    curl --location --request GET 'https://api.tdameritrade.com/v1/marketdata/chains?apikey=H2PZBDOKOS3FLTGOPRBD0A9GX6UILCJL&symbol='${line}'&contractType=ALL&strikeCount=30&includeQuotes=TRUE&strategy=SINGLE&range=ALL&expMonth=ALL' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer '${REFRESH} >> ../docs/exampleJSONData/${line}_live_data.json
+    echo ${line}
+    python3 parseLiveData.py ${line}
+    rm ../docs/exampleJSONData/${line}_live_data.json
 done < "$input"
+
+
+    

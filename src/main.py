@@ -4,16 +4,14 @@ import psycopg2
 import matplotlib.pyplot as plt
 import io
 from config import config
-import parseLiveDataJSON
 from math import log10;
 
-def getData(stockTicker,optionStrike=0,optionPrice=0):
-    parseLiveDataJSON.liveParseData(stockTicker)
+def getData(stockTicker):
     params = config()
     conn = psycopg2.connect(**params)
     with conn:
         cur = conn.cursor()
-        cur.execute("select * from stock_live_data;")
+        cur.execute("select * from stock_live_data where stock=%s;" % ("\'"+stockTicker+"\'"))
         row = cur.fetchone()
         stockBid = row[1]
         stockAsk = row[2]
@@ -22,7 +20,7 @@ def getData(stockTicker,optionStrike=0,optionPrice=0):
         stock_fifty_two_week_high = row[5]
         stock_fifty_two_week_low = row[6]
 
-        cur.execute("select * from options_live_data where delta <= 0.2;")
+        cur.execute("select * from options_live_data where delta <= 0.2 and stock=%s;" % ("\'" + stockTicker + "\'"))
         optionList = []
         row = cur.fetchone()
         anchorStrike = row[2]

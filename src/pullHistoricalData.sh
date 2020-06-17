@@ -1,4 +1,5 @@
 #!/bin/bash
+
 input="../stockList.txt"
 while read p;
 do
