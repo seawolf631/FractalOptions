@@ -34,6 +34,9 @@
     </tr>
     <br>
   </table>
+  <div style="background-color:yellow; width:35%;">
+    <h5>Best Option Price is:</h6><p>{{bestOption}}</p>
+  </div>
 <h1>Option Chain Data (Out of the Money)</h1>
 <table>
 <tr>
@@ -43,9 +46,9 @@
   <td>ask</td>
   <td>last</td>
   <td>volume</td>
-  <td>Implied Volatility</td>
+  <td>Days to Expiration</td>
   <td>Delta</td>
-  <td>Days To Expiration</td>
+  <td>Implied Volatility</td>
   <td>Implied Alpha</td>
 </tr>
 {%for i in optionList%}
@@ -55,10 +58,10 @@
   <td>{{i[3]}}</td>
   <td>{{i[4]}}</td>
   <td>{{i[5]}}</td>
-  <td>{{i[6]}}</td>
-  <td>{{i[7]}}</td>
-  <td>{{i[8]}}</td>
-  <td>{{i[9]}}</td>
+  <td style="text-align:center;">{{i[6]}}</td>
+  <td style="text-align:center">{{i[9]}}</td>
+  <td style="text-align:center;">{{i[8]}}</td>
+  <td style="text-align:center;">{{i[7]}}</td>
   <td>{{i[11]}}</td>
 </tr>
 {%endfor%}

@@ -26,6 +26,8 @@ def getData(stockTicker):
         anchorStrike = row[2]
         anchorPrice = row[5]
         optionList.append(row)
+        bestPrice = 0
+        bestOption = []
         while row:
             daysToExp = row[9]
             row = cur.fetchone()
@@ -36,20 +38,23 @@ def getData(stockTicker):
                 else:
                     if(row[5] > 0.0):
                         alpha = 1 - (log10(row[5]/anchorPrice)/log10((row[2]-stockLast)/(anchorStrike-stockLast)))
+                        if(alpha > bestPrice):
+                            bestPrice = alpha
+                            bestOption = row[1]
                     else:
                         alpha = "N/a"
                     row += (alpha,)
                 optionList.append(row)
     cur.close()    
     conn.close()
-    return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList
+    return stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low, optionList, bestOption
 
 @app.route("/stock", methods=['POST','GET'])
 def get_stock_ticker():
     stockTicker = request.form['stockTicker']
     negativeStockFile = stockTicker + "_Negative_plot.png"
     positiveStockFile = stockTicker + "_Positive_plot.png"
-    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData(stockTicker)
+    stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList,bestOption = getData(stockTicker)
     templateData = {
         'stockBid':stockBid,
         'stockAsk':stockAsk,
@@ -59,7 +64,8 @@ def get_stock_ticker():
         'stock_fifty_two_week_low':stock_fifty_two_week_low,
         'optionList':optionList,
         'negative_Stock_Plot':negativeStockFile,
-        'positive_Stock_Plot':positiveStockFile
+        'positive_Stock_Plot':positiveStockFile,
+        'bestOption':bestOption
         }
     return render_template('stock.html',**templateData)
 
