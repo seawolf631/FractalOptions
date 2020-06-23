@@ -1,7 +1,7 @@
 # FractalOptions
 
-#Table of Contents#
+# Table of Contents #
 
-#Problem#
+# Problem #
 
-#Contact Information#
+# Contact Information #
