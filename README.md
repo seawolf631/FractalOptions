@@ -6,6 +6,7 @@
 
 ## Pipeline ##
 
+![Data Pipeline image](/docs/dataPipelineImage.png)
 
 ## Future Work ##
 
