@@ -9,12 +9,12 @@
       <input type="submit">
     </form>
   </p>
-  <h1>Log Survival Plot</h1>
+  <h1>Historical Alpha Plot</h1>
   <div style="margin:0 auto;">
     <img src="{{url_for('static', filename=negative_Stock_Plot)}}"/>
     <img src="{{url_for('static',filename=positive_Stock_Plot)}}"/>
   </div>
-  <h1>Stock Live Data</h1>
+  <h1>Current Stock Data</h1>
   <table>
     <tr>
       <td>bid</td>
@@ -29,15 +29,12 @@
       <td>{{stockAsk}}</td>
       <td>{{stockLast}}</td>
       <td>{{stockVolume}}</td>
-      <td>{{stock_fifty_two_week_high}}</td>
-      <td>{{stock_fifty_two_week_low}}</td>
+      <td style="text-align:center;">{{stock_fifty_two_week_high}}</td>
+      <td style="text-align:center;">{{stock_fifty_two_week_low}}</td>
     </tr>
     <br>
   </table>
-  <div style="background-color:yellow; width:35%;">
-    <h5>Best Option Price is:</h6><p>{{bestOption}}</p>
-  </div>
-<h1>Option Chain Data (Out of the Money)</h1>
+<h1>Top 10 Options to Buy</h1>
 <table>
 <tr>
   <td>Description</td>
@@ -49,7 +46,7 @@
   <td>Days to Expiration</td>
   <td>Delta</td>
   <td>Implied Volatility</td>
-  <td>Implied Alpha</td>
+  <td><b>Implied Alpha</b></td>
 </tr>
 {%for i in optionList%}
 <tr>
@@ -62,7 +59,7 @@
   <td style="text-align:center">{{i[9]}}</td>
   <td style="text-align:center;">{{i[8]}}</td>
   <td style="text-align:center;">{{i[7]}}</td>
-  <td>{{i[11]}}</td>
+  <td><b>{{i[11]}}</b></td>
 </tr>
 {%endfor%}
 </table>

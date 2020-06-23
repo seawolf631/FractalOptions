@@ -57,7 +57,7 @@ with open('../stockList.txt') as f:
             plt.title(line + " 20 yr. Daily "+direction.upper()+" % Return Survival Function (Log Scale)")
             plt.xscale('log')
             plt.yscale('log')
-            plt.text(0.0001, 0.001, info, {'color':'r','fontsize':20})
+            plt.text(0.0001, 0.001, info, {'color':'r','fontsize':12})
             plt.plot(x,newY)
             fileName = 'static/' + line + "_"+direction+"_plot.png"
             plt.savefig(fileName)

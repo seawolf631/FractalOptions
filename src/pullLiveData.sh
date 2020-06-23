@@ -21,5 +21,6 @@ do
     rm ../docs/exampleJSONData/${line}_live_data.json
 done < "$input"
 
+rm ../docs/keys.json
 
     

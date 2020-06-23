@@ -5,6 +5,7 @@ import re
 from config import config
 import sys
 import liveDataAPICall
+from math import log10
 
 def resetDatabaseTables():
     params = config()
@@ -17,6 +18,37 @@ def resetDatabaseTables():
 
         cur.execute("DROP TABLE IF EXISTS options_live_data;")
         cur.execute("CREATE TABLE options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL,strike real NOT NULL, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL, delta real NOT NULL, days_to_expiration real NOT NULL,stock varchar(8) NOT NULL);")
+    cur.close()
+    conn.close()
+    
+def insertAlpha(stockTicker):
+    params = config()
+    conn = psycopg2.connect(**params)
+    stockTicker = "\'" + stockTicker + "\'"
+    
+    with conn:
+        cur = conn.cursor()
+        alphaDict = {}
+        stockQuery = cur.execute("select last from stock_live_data where stock=%s;" % (stockTicker))
+        stockLast = float(cur.fetchone()[0])
+        cur.execute("select * from options_live_data where delta <= 0.2 and stock=%s;" % (stockTicker))
+        row = cur.fetchone()
+        anchorStrike = row[2]
+        anchorPrice = row[5]
+        while row:
+            daysToExp = row[9]
+            row = cur.fetchone()
+            if(row is not None):
+                if(daysToExp != row[9]):
+                    anchorStrike = row[2]
+                    anchorPrice = row[5]
+                else:
+                    if(row[5] > 0.0 and anchorPrice > 0.0 and (row[5] - anchorPrice != 0)):
+                        #print("last="+ str(row[5]) + "  anchorPrice=" + str(anchorPrice) + "  stockLast="+str(stockLast))
+                        alpha = 1 - (log10(row[5]/anchorPrice)/log10((row[2]-stockLast)/(anchorStrike-stockLast)))
+                        alphaDict[row[1]] = alpha
+        for x in alphaDict:
+            cur.execute("Update options_live_data SET alpha=%s where description=%s;" % (alphaDict[x],"\'"+x +"\'"))
     cur.close()
     conn.close()
     
@@ -34,7 +66,7 @@ def liveParseData(stockTicker):
             
             cur.execute("Insert INTO stock_live_data (bid,ask,last,volume,fiftyTwo_week_high,fiftyTwo_week_low,stock) VALUES (%s,%s,%s,%s,%s,%s,%s);" % (data["underlying"]["bid"],data["underlying"]["ask"],data["underlying"]["last"],data["underlying"]["totalVolume"],data["underlying"]["fiftyTwoWeekHigh"],data["underlying"]["fiftyTwoWeekLow"],stockTicker))
 
-            cur.execute("CREATE TABLE IF NOT EXISTS options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL,strike real NOT NULL, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL, delta real NOT NULL, days_to_expiration real NOT NULL,stock varchar(8) NOT NULL);")
+            cur.execute("CREATE TABLE IF NOT EXISTS options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL,strike real NOT NULL, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL, delta real NOT NULL, days_to_expiration real NOT NULL,stock varchar(8) NOT NULL, alpha real);")
             
             for x in data["callExpDateMap"]:
                 for y in data["callExpDateMap"][x]:
@@ -47,3 +79,4 @@ def liveParseData(stockTicker):
 
 stockTicker = sys.argv[1]
 liveParseData(stockTicker)
+insertAlpha(stockTicker)
