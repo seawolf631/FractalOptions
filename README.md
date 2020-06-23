@@ -4,4 +4,8 @@
 
 ## Problem ##
 
+## Pipeline ##
+
+## Future Work ##
+
 ## Contact Information ##
