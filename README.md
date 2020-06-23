@@ -1,8 +1,8 @@
 # FractalOptions
 
 ## Table of Contents ##
-1. Problem
-2. Pipeline
+1. [Problem](#problem)
+2. [Pipeline](#pipeline)
 
 ## Problem ##
 
