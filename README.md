@@ -1,4 +1,7 @@
 # FractalOptions
 
+#Table of Contents#
 
-Testing
+#Problem#
+
+#Contact Information#
