@@ -34,7 +34,7 @@ def getData(stockTicker):
 
 @app.route("/stock", methods=['POST','GET'])
 def get_stock_ticker():
-    stockTicker = request.form['stockTicker']
+    stockTicker = request.form['stockTicker'].upper()
     negativeStockFile = stockTicker + "_Negative_plot.png"
     positiveStockFile = stockTicker + "_Positive_plot.png"
     stockBid, stockAsk, stockLast, stockVolume, stock_fifty_two_week_high, stock_fifty_two_week_low,optionList = getData(stockTicker)

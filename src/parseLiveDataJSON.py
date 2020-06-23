@@ -4,7 +4,6 @@ import os
 import re
 from config import config
 import sys
-import liveDataAPICall
 from math import log10
 
 def resetDatabaseTables():
