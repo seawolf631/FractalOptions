@@ -13,10 +13,7 @@ def resetDatabaseTables():
     with conn:
         cur = conn.cursor()
         cur.execute("DROP TABLE IF EXISTS stock_live_data;")
-        cur.execute("CREATE TABLE stock_live_data(stock_price_id serial PRIMARY KEY, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, fiftyTwo_week_high real NOT NULL,fiftyTwo_week_low real NOT NULL, stock varchar(8) NOT NULL);")
-
         cur.execute("DROP TABLE IF EXISTS options_live_data;")
-        cur.execute("CREATE TABLE options_live_data(option_price_id serial PRIMARY KEY, description varchar(36) NOT NULL,strike real NOT NULL, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, implied_volatility real NOT NULL, delta real NOT NULL, days_to_expiration real NOT NULL,stock varchar(8) NOT NULL);")
     cur.close()
     conn.close()
     
@@ -75,7 +72,10 @@ def liveParseData(stockTicker):
     cur.close()
     conn.close()
 
+input = sys.argv[1]
 
-stockTicker = sys.argv[1]
-liveParseData(stockTicker)
-insertAlpha(stockTicker)
+if(input == 'DELETE'):
+    resetDatabaseTables()
+else:
+    liveParseData(input)
+    insertAlpha(input)

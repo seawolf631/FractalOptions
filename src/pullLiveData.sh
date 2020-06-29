@@ -1,5 +1,7 @@
 #!/bin/bash
 
+python3 parseLiveDataJSON.py DELETE
+
 curl --location --request POST 'https://api.tdameritrade.com/v1/oauth2/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=refresh_token' \
@@ -19,6 +21,7 @@ do
     echo ${line}
     python3 parseLiveDataJSON.py ${line}
     rm ../docs/exampleJSONData/${line}_live_data.json
+    sleep 0.1
 done < "$input"
 
 rm ../docs/keys.json
