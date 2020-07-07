@@ -55,7 +55,7 @@ def liveParseData(stockTicker):
 
     with conn:
         cur = conn.cursor()
-        with open('../docs/exampleJSONData/'+stockTicker+'_live_data.json') as f:
+        with open('/home/ubuntu/FractalOptions/docs/exampleJSONData/'+stockTicker+'_live_data.json') as f:
             data = json.load(f)
             stockTicker = "\'" + stockTicker + "\'"
             cur.execute("CREATE TABLE IF NOT EXISTS stock_live_data(stock_price_id serial PRIMARY KEY, bid real NOT NULL,ask real NOT NULL, last real NOT NULL,volume real NOT NULL, fiftyTwo_week_high real NOT NULL,fiftyTwo_week_low real NOT NULL, stock varchar(8) NOT NULL);")

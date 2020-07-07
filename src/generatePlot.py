@@ -22,7 +22,7 @@ def getData(stock,direction):
     conn.close()
     return queryResult, rowLength
 
-with open('../stockList.txt') as f:
+with open('/home/ubuntu/FractalOptions/stockList.txt') as f:
     directions = ['Negative','Positive']
     for line in f:
         line = line.split()[0]
